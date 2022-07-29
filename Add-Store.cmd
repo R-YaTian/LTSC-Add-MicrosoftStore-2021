@@ -40,12 +40,12 @@ for /f %%i in ('dir /s/b %~dp0*NET.Native.Runtime*x86*') do %install%  %%i && ec
 echo.
 echo Microsoft.UI.Xaml x86 installing...
 for /f %%i in ('dir /s/b %~dp0*UI.Xaml*x86*') do %install%  %%i && echo Microsoft.UI.Xaml x86 installing finished
-for /f  "tokens=2-3 delims=." %%G in ('PowerShell get-appxpackage *vclib*') do  if %%G==VCLibs (goto :skipVCLibsx86)
+for /f  "tokens=2-3 delims=." %%G in ('PowerShell get-appxpackage *vclib*x86*') do  if %%G==VCLibs (goto :skipVCLibsx86)
 echo.
 echo Microsoft.VCLibs x86 installing...
 for /f %%i in ('dir /s/b %~dp0*VCLibs*x86*') do %install%  %%i && echo Microsoft.VCLibs x86 installing finished
 :skipVCLibsx86
-for /f  "tokens=2-3 delims=." %%G in ('PowerShell get-appxpackage *vclib*UWP*') do  if %%G==VCLibs (goto :skipVCLibsUWPx86)
+for /f  "tokens=2-3 delims=." %%G in ('PowerShell get-appxpackage *vclib*UWP*x86*') do  if %%G==VCLibs (goto :skipVCLibsUWPx86)
 echo.
 echo Microsoft.VCLibs UWP x86 installing...
 for /f %%i in ('dir /s/b %~dp0*VCLibs*UWP*x86*') do %install%  %%i && echo Microsoft.VCLibs UWP x86 installing finished
