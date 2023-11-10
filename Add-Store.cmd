@@ -1,6 +1,11 @@
 @echo off
+set psc=powershell.exe
+set _PSarg="""%~f0""" -el
+>nul fltmc || (
+%psc% "start cmd.exe -arg '/c %_PSarg%' -verb runas" && exit /b
+goto :administrator
+)
 for /f "tokens=6 delims=[]. " %%G in ('ver') do if %%G lss 19044 goto :version
-openfiles 1>nul 2>nul || goto :administrator
 if /i "%PROCESSOR_ARCHITECTURE%" equ "AMD64" (set "arch=x64") else (set "arch=x86")
 set "install=PowerShell -NoLogo -NoProfile -NonInteractive  -ExecutionPolicy Bypass add-appxpackage"
 if exist "%~dp0*StorePurchaseApp*.AppxBundle" (
