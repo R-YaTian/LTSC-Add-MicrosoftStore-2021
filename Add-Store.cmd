@@ -14,62 +14,76 @@ for /f %%i in ('dir /s/b %~dp0*StorePurchaseApp*.AppxBundle 2^>nul') do set "Pur
 if exist "%~dp0*XboxIdentityProvider*.AppxBundle" (
 for /f %%i in ('dir /s/b %~dp0*XboxIdentityProvider*.AppxBundle 2^>nul') do set "XboxIdentity=%%i"
 )
+:ChoicePrompt
+set "choice="
+set /p choice="Do you want to install latest DesktopAppInstaller with winget included? This may take a while.(Y/N): "
+set choice=%choice:~0,1%
+if /i "%choice%"=="Y" (
+    %psc% -Command ^
+        "try { Invoke-WebRequest -Uri 'https://aka.ms/getwinget' -OutFile '%~dp0\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle' -TimeoutSec 10; exit 0 } catch { exit 1 }"
+    if %errorlevel% neq 0 (
+        goto checkarch
+    ) else (
+        set "AppInstaller=Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
+        goto checkarch
+    )
+) else if /i "%choice%"=="N" (
+    goto checkarch
+) else (
+    goto ChoicePrompt
+)
+:checkarch
 if /i %arch%==x64 (goto :x64) else (goto :x86)
 goto :error
 :x64
 echo.
 echo Microsoft.NET.Native.Framework x64 installing...
-for /f %%i in ('dir /s/b %~dp0*NET.Native.Framework*x64*') do %install%  %%i && echo Microsoft.NET.Native.Framework x64 installing finished
+for /f %%i in ('dir /s/b %~dp0*NET.Native.Framework*x64*') do %install%  %%i && echo Microsoft.NET.Native.Framework x64 install finished
 echo.
 echo Microsoft.NET.Native.Runtime x64 installing...
-for /f %%i in ('dir /s/b %~dp0*NET.Native.Runtime*x64*') do %install%  %%i && echo Microsoft.NET.Native.Runtime x64 installing finished
+for /f %%i in ('dir /s/b %~dp0*NET.Native.Runtime*x64*') do %install%  %%i && echo Microsoft.NET.Native.Runtime x64 install finished
 echo.
 echo Microsoft.UI.Xaml x64 installing...
-for /f %%i in ('dir /s/b %~dp0*UI.Xaml*x64*') do %install%  %%i && echo Microsoft.UI.Xaml x64 installing finished
-for /f  "tokens=2-3 delims=." %%G in ('PowerShell get-appxpackage *vclib*') do  if %%G==VCLibs (goto :skipVCLibsx64)
+for /f %%i in ('dir /s/b %~dp0*UI.Xaml*x64*') do %install%  %%i && echo Microsoft.UI.Xaml x64 install finished
 echo.
-echo Microsoft.VCLibs x64 installing...
-for /f %%i in ('dir /s/b %~dp0*VCLibs*x64*') do %install%  %%i && echo Microsoft.VCLibs x64 installing finished
-:skipVCLibsx64
-for /f  "tokens=2-3 delims=." %%G in ('PowerShell get-appxpackage *vclib*UWP*') do  if %%G==VCLibs (goto :x86)
-echo.
-echo Microsoft.VCLibs UWP x64 installing...
-for /f %%i in ('dir /s/b %~dp0*VCLibs*UWP*x64*') do %install%  %%i && echo Microsoft.VCLibs UWP x64 installing finished
+echo Microsoft.VCLibs x64 and UWP x64 installing...
+for /f %%i in ('dir /s/b %~dp0*VCLibs*x64*') do %install%  %%i
+echo Microsoft.VCLibs x64 and UWP x64 install finished
 :x86
 echo.
 echo Microsoft.NET.Native.Framework x86 installing...
-for /f %%i in ('dir /s/b %~dp0*NET.Native.Framework*x86*') do %install%  %%i && echo Microsoft.NET.Native.Framework x86 installing finished
+for /f %%i in ('dir /s/b %~dp0*NET.Native.Framework*x86*') do %install%  %%i && echo Microsoft.NET.Native.Framework x86 install finished
 echo.
 echo Microsoft.NET.Native.Runtime x86 installing...
-for /f %%i in ('dir /s/b %~dp0*NET.Native.Runtime*x86*') do %install%  %%i && echo Microsoft.NET.Native.Runtime x86 installing finished
+for /f %%i in ('dir /s/b %~dp0*NET.Native.Runtime*x86*') do %install%  %%i && echo Microsoft.NET.Native.Runtime x86 install finished
 echo.
 echo Microsoft.UI.Xaml x86 installing...
-for /f %%i in ('dir /s/b %~dp0*UI.Xaml*x86*') do %install%  %%i && echo Microsoft.UI.Xaml x86 installing finished
-for /f  "tokens=2-3 delims=." %%G in ('PowerShell get-appxpackage *vclib*x86*') do  if %%G==VCLibs (goto :skipVCLibsx86)
+for /f %%i in ('dir /s/b %~dp0*UI.Xaml*x86*') do %install%  %%i && echo Microsoft.UI.Xaml x86 install finished
 echo.
-echo Microsoft.VCLibs x86 installing...
-for /f %%i in ('dir /s/b %~dp0*VCLibs*x86*') do %install%  %%i && echo Microsoft.VCLibs x86 installing finished
-:skipVCLibsx86
-for /f  "tokens=2-3 delims=." %%G in ('PowerShell get-appxpackage *vclib*UWP*x86*') do  if %%G==VCLibs (goto :skipVCLibsUWPx86)
-echo.
-echo Microsoft.VCLibs UWP x86 installing...
-for /f %%i in ('dir /s/b %~dp0*VCLibs*UWP*x86*') do %install%  %%i && echo Microsoft.VCLibs UWP x86 installing finished
-:skipVCLibsUWPx86
+echo Microsoft.VCLibs x86 and UWP x86 installing...
+for /f %%i in ('dir /s/b %~dp0*VCLibs*x86*') do %install%  %%i
+echo Microsoft.VCLibs x86 and UWP x86 install finished
 echo.
 echo Microsoft.WindowsStore installing...
-for /f %%i in ('dir /s/b %~dp0*WindowsStore*') do %install%  %%i && echo Microsoft.WindowsStore installing finished
+for /f %%i in ('dir /s/b %~dp0*WindowsStore*') do %install%  %%i && echo Microsoft.WindowsStore install finished
+if defined AppInstaller (
+echo.
+echo Latest DesktopAppInstaller installing...
+%install% "%~dp0\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" && echo Latest DesktopAppInstaller install finished
+) else (
 echo.
 echo DesktopAppInstaller installing...
-for /f %%i in ('dir /s/b %~dp0*DesktopAppInstaller*') do %install%  %%i && echo DesktopAppInstaller installing finished
+for /f %%i in ('dir /s/b %~dp0*DesktopAppInstaller*') do %install%  %%i && echo DesktopAppInstaller install finished
+)
 if defined PurchaseApp (
 echo.
 echo Microsoft.StorePurchaseApp installing...
-for /f %%i in ('dir /s/b %~dp0*StorePurchaseApp*') do %install%  %%i && echo Microsoft.StorePurchaseApp installing finished
+for /f %%i in ('dir /s/b %~dp0*StorePurchaseApp*') do %install%  %%i && echo Microsoft.StorePurchaseApp install finished
 )
 if defined XboxIdentity (
 echo.
 echo Microsoft.XboxIdentityProvider installing...
-for /f %%i in ('dir /s/b %~dp0*XboxIdentityProvider*') do %install%  %%i && echo Microsoft.XboxIdentityProvider installing finished
+for /f %%i in ('dir /s/b %~dp0*XboxIdentityProvider*') do %install%  %%i && echo Microsoft.XboxIdentityProvider install finished
 )
 goto :finished
 
