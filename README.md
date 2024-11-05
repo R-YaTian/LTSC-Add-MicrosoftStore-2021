@@ -1,5 +1,5 @@
-# LTSC-Add-MicrosoftStore-2021
-Add Windows Store for LTSC2021
+# LTSC-Add-MicrosoftStore-2021_2024
+Add Windows Store for LTSC2021/2024
 
 Note:  
 Microsoft.StorePurchaseApp: CategoryID=214308d7-4262-449d-a78d-9a2306144b11  
