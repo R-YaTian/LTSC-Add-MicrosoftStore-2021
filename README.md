@@ -7,3 +7,11 @@ Microsoft.WindowsStore: ProductId=9WZDNCRFJBMP
 Microsoft.DesktopAppInstaller: ProductId=9NBLGGH4NNS1  
 Microsoft.XboxIdentityProvider: ProductId=9WZDNCRD1HKW  
 [Online link generator for Microsoft Store](https://store.rg-adguard.net/)
+
+To install with winget:
+```
+winget install --id 9NBLGGH4LS1F
+winget install --id 9WZDNCRFJBMP
+winget install --id 9NBLGGH4NNS1
+winget install --id 9WZDNCRD1HKW
+```
