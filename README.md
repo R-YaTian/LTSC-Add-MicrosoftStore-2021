@@ -10,8 +10,8 @@ Microsoft.XboxIdentityProvider: ProductId=9WZDNCRD1HKW
 
 To install with winget:
 ```
-winget install --id 9NBLGGH4LS1F
-winget install --id 9WZDNCRFJBMP
-winget install --id 9NBLGGH4NNS1
-winget install --id 9WZDNCRD1HKW
+winget install --id 9NBLGGH4LS1F -s msstore
+winget install --id 9WZDNCRFJBMP -s msstore
+winget install --id 9NBLGGH4NNS1 -s msstore
+winget install --id 9WZDNCRD1HKW -s msstore
 ```
